@@ -7,13 +7,13 @@ The API Co-Signer can be configured to work with a callback handler. This is a w
 Fireblocks provides with the ability to verify ETH or BTC transactions before these are getting signed by the API Co-Signer. 
 It is possible to configure your workspace to receive the RAW data of the ETH or the BTC transaction as a part of the payload sent to the callback handler.
 
-In this article we are going to cover how to verify Ethereum and Bitcoin raw transactions.
+In this article we are going to cover how to verify Ethereum raw transactions.
 
 
 
 ## ETH - Callback Handler Payload structure
 
-First, let’s take a look on the payload that is sent from the Co-Signer to the Callback handler (a detailed spec can be found in here):
+First, let’s take a look on the payload that is sent from the Co-Signer to the Callback handler (a detailed spec can be found in [here](https://developers.fireblocks.com/reference/transaction-signing-request-approval)):
 
 ```
 {
@@ -82,21 +82,20 @@ Note that the RLP encoded payload  (```rawTx.rawTx```) is the actual payload tha
 
 
 ## Creating our callback application:
-
-### Before diving into the verification of the ETH transaction process, let’s start with spinning up our callback server. In this example I am going to use Express.js framework:
+Before diving into the verification of the ETH transaction process, let’s start with spinning up our callback server. In this example I am going to use Express.js framework:
 
 Install express:\
 ```npm i express```
 
-We will also need some additional packages to be installed:\
+We will also need some additional packages to be installed:
 ```npm i jsonwebtoken fs body-parser @ethereumjs/tx```
 
-Initiating the app:\
+Initiating the app:
 ```
 const port = 8080;
 const app = express();
 ```
-Let’s set our middleware (we are using body-parser here in order to access the raw body sent over to our POST endpoint that we will add shortly):\
+Let’s set our middleware (we are using body-parser here in order to access the raw body sent over to our POST endpoint that we will add shortly):
 ```
 const bodyParser = require("body-parser");
 
