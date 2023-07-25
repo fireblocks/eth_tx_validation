@@ -11,7 +11,7 @@ In this article we are going to cover how to verify Ethereum and Bitcoin raw tra
 
 
 
-## ETH - Payload structure
+## ETH - Callback Handler Payload structure
 
 First, let’s take a look on the payload that is sent from the Co-Signer to the Callback handler (a detailed spec can be found in here):
 
@@ -67,7 +67,18 @@ First, let’s take a look on the payload that is sent from the Co-Signer to the
   ],
   "requestId": "9c794cee-7e27-46c9-9e9a-ed68295ff06b"
 }
-
 ```
+
+The payload above contains a lot of information but we will be focusing only on some parts of it:
+
+1. Amount (```destinations[0].amountNative```)
+2. Destination Address (```destinations[0].displayDstAddress```)
+3. Raw Transaction array (```rawTx```)
+RLP encoded payload (```rawTx.rawTx```)
+The hash of the raw transaction (```rawTx.payload```)
+
+
+Note that the RLP encoded payload  (```rawTx.rawTx````) is the actual payload that you are signing on, or to be precise, the signature is done over the keccak256 hash of the RLP encoded payload, which is exactly the hash provided in the ```rawTx.payload``` property
+
 
 
