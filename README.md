@@ -1,2 +1,1 @@
-# slavasereb.github.io
-ETH Transaction callback handler validation
+# ETH Transaction callback handler validation
