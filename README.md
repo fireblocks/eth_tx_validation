@@ -146,7 +146,7 @@ eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ0eElkIjoiNDhmNjg3MWMtMDQ2Ny00YjU2LThjNDQ
 
 * Kindly note that the signature part of the JWT is obfuscated as a security best practice.
 
-If you take this JWT and go to jwt.io - you’ll get the same clear text json payload as at the beginning of this guide.
+If you take this JWT and parse it in jwt.io - you’ll get the same clear text json payload as at the beginning of this guide.
 
 ## JWT Verification
 
