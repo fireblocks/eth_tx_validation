@@ -78,25 +78,25 @@ RLP encoded payload (```rawTx.rawTx```)
 The hash of the raw transaction (```rawTx.payload```)
 
 
-Note that the RLP encoded payload  (```rawTx.rawTx````) is the actual payload that you are signing on, or to be precise, the signature is done over the keccak256 hash of the RLP encoded payload, which is exactly the hash provided in the ```rawTx.payload``` property
+Note that the RLP encoded payload  (```rawTx.rawTx```) is the actual payload that you are signing on, or to be precise, the signature is done over the keccak256 hash of the RLP encoded payload, which is exactly the hash provided in the ```rawTx.payload``` property
 
 
 ## Creating our callback application:
 
 ### Before diving into the verification of the ETH transaction process, let’s start with spinning up our callback server. In this example I am going to use Express.js framework:
 
-Install express:
+Install express:\
 ```npm i express```
 
-We will also need some additional packages to be installed:
+We will also need some additional packages to be installed:\
 ```npm i jsonwebtoken fs body-parser @ethereumjs/tx```
 
-Initiating the app:
+Initiating the app:\
 ```
 const port = 8080;
 const app = express();
 ```
-Let’s set our middleware (we are using body-parser here in order to access the raw body sent over to our POST endpoint that we will add shortly):
+Let’s set our middleware (we are using body-parser here in order to access the raw body sent over to our POST endpoint that we will add shortly):\
 ```
 const bodyParser = require("body-parser");
 
