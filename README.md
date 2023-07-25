@@ -15,7 +15,7 @@ In this article we are going to cover how to verify Ethereum raw transactions.
 
 First, let’s take a look on the payload that is sent from the Co-Signer to the Callback handler (a detailed spec can be found in [here](https://developers.fireblocks.com/reference/transaction-signing-request-approval)):
 
-```
+```json
 {
   "txId": "9c794cee-7e27-46c9-9e9a-ed68295ff06b",
   "operation": "TRANSFER",
@@ -91,12 +91,12 @@ We will also need some additional packages to be installed:\
 ```npm i jsonwebtoken fs body-parser @ethereumjs/tx```
 
 Initiating the app:
-```
+```js
 const port = 8080;
 const app = express();
 ```
 Let’s set our middleware (we are using body-parser here in order to access the raw body sent over to our POST endpoint that we will add shortly):
-```
+```js
 const bodyParser = require("body-parser");
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -115,7 +115,7 @@ app.use(function (req) {
 ```
 
 Defining our route for the /v2/tx_sign_request endpoint:
-```
+```js
 app.post("/v2/tx_sign_request", (req, res) => { 
 	console.log("The raw body of the HTTP request:", req.rawBody)
 }
@@ -128,7 +128,7 @@ But just to cover it in a few words - each request from the Co-Signer to the cal
 We assume that you have gone through the authentication setup article and you have the callback private + public keys and also the Co-Signer public key.
 
 Loading the callback’s private key + the cosigner public key:
-```
+```js
 const fs = require("fs");
 
 // Read the callback handler private key
@@ -151,7 +151,7 @@ If you take this JWT and parse it in jwt.io - you’ll get the same clear text j
 ## JWT Verification
 
 So what should we do with this JWT? We need to verify it’s signature by using the Co-Signer public key and we need to decode it to JSON:
-```
+```js
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
 
@@ -185,7 +185,7 @@ app.post("/v2/tx_sign_request", (req, res) => {
 
 So now we have set the authentication and if the token is verified we can actually move on to the transaction validation part. Let define a new function validateETHTransaction. It will get the plain text payload and will build an ETH transaction object from the RLP encoded hex:
 
-```
+```js
 const { FeeMarketEIP1559Transaction } = require('@ethereumjs/tx');
 
 const validateETHTransaction = (payload) => {
@@ -203,7 +203,7 @@ const validateETHTransaction = (payload) => {
 Basically, we are taking the RLP encoded hex and by using the 'FeeMarketEIP1559Transaction class from @ethereumjs/tx, we are building the transaction object.
 
 If we will print the unsignedTx object, we’ll get:
-```
+```json
 {
   "chainId": "0x1",
   "nonce": "0x4",
@@ -220,7 +220,7 @@ If we will print the unsignedTx object, we’ll get:
 ## Verifying the transaction parameters
 
 So now we can actually check whether the destination and the amount in the decoded transaction match the JSON values of the payload:
-```
+```js
 const { FeeMarketEIP1559Transaction } = require('@ethereumjs/tx');
 
 const validateETHTransaction = (payload) => {
@@ -243,7 +243,7 @@ const validateETHTransaction = (payload) => {
 
 
 We can actually add one more check - verify that the hash of the unsignedTx matches the provided hash in the payload:
-```
+```js
 const { FeeMarketEIP1559Transaction } = require('@ethereumjs/tx');
 
 const validateETHTransaction = (payload) => {
@@ -282,7 +282,7 @@ The response from the callback should be in the following format (signed with RS
 
 Let’s just add one more function (my personal preference) that will generate the signed response that should be sent from the callback handler:
 
-```
+```js
 const generateSignedResponse = (action) => {
     
     const signedRes = jwt.sign(
@@ -297,7 +297,7 @@ const generateSignedResponse = (action) => {
 
 ## All parts together
 
-```
+```js
 const fs = require("fs");
 const express = require("express");
 const jwt = require("jsonwebtoken");
