@@ -87,7 +87,7 @@ Before diving into the verification of the ETH transaction process, let’s star
 Install express:\
 ```npm i express```
 
-We will also need some additional packages to be installed:
+We will also need some additional packages to be installed:\
 ```npm i jsonwebtoken fs body-parser @ethereumjs/tx```
 
 Initiating the app:
