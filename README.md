@@ -99,15 +99,16 @@ Let’s set our middleware (we are using body-parser here in order to access the
 ```js
 const bodyParser = require("body-parser");
 
+const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json())
-app.use(function (req) {
+app.use( (req) => {
     req.rawBody = "";
     req.setEncoding("utf8");
-    req.on("data", function(chunk) {
+    req.on("data", (chunk) => {
       req.rawBody += chunk;
     });
-    req.on("end", function () {
+    req.on("end", () => {
       req.next();
     });
   }
@@ -155,15 +156,16 @@ So what should we do with this JWT? We need to verify it’s signature by using 
 const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
 
+const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json())
-app.use(function (req) {
+app.use( (req) => {
     req.rawBody = "";
     req.setEncoding("utf8");
-    req.on("data", function(chunk) {
+    req.on("data", (chunk) => {
       req.rawBody += chunk;
     });
-    req.on("end", function () {
+    req.on("end", () => {
       req.next();
     });
   }
@@ -314,15 +316,16 @@ const cosignerPubKey = fs.readFileSync("cosigner_public.pem");
 const port = 8080; 
 const app = express();
 
+const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json())
 app.use( (req) => {
     req.rawBody = "";
     req.setEncoding("utf8");
-    req.on("data", function(chunk) {
+    req.on("data", (chunk) => {
       req.rawBody += chunk;
     });
-    req.on("end", function () {
+    req.on("end", () => {
       req.next();
     });
   }
@@ -386,3 +389,4 @@ app.post("/v2/tx_sign_request", (req, res) => {
 console.log(`Callback is running on http://localhost:${port}`)
 app.listen(port);
 ```
+
