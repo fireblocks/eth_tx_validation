@@ -88,7 +88,9 @@ Install express:\
 ```npm i express```
 
 We will also need some additional packages to be installed:\
-```npm i jsonwebtoken fs body-parser @ethereumjs/tx```
+```npm i jsonwebtoken fs body-parser @ethereumjs/tx@4.2.0```
+
+Note: the code below is written for ```@ethereumjs/tx``` 4.x. Later major versions changed the transaction API, so re-test the validation before upgrading.
 
 Initiating the app:
 ```js
@@ -238,10 +240,16 @@ const validateETHTransaction = (payload) => {
         parseFloat(unsignedTx.value, 16) / 1e18 === payload.destinations[0].amountNative 
         && 
         unsignedTx.to.toString("hex") === payload.destinations[0].displayDstAddress.toLowerCase() 
+        && 
+        unsignedTx.data.length === 0 // no calldata: plain ETH transfers only
     )
 }
 ```
 *Note that the address in the payload is in checksum format hence we need to lower case it
+
+**Always check the calldata (`unsignedTx.data`) too.** The amount and the destination only describe the envelope of the transaction; the calldata is what a contract actually executes. A transaction that sends `0` ETH to a legitimate (even whitelisted) token contract can still carry `approve(attacker, MAX_UINT256)` or `transfer(attacker, balance)` in its calldata, and a handler that checks only the value and the destination will approve it. The check `unsignedTx.data.length === 0` makes this handler approve plain ETH transfers only.
+
+If you need to approve contract calls, do not simply remove this check. Decode the call (4-byte function selector plus arguments) and allowlist the specific contracts, functions and argument values you expect, for example only `approve` to spenders you have vetted. Reject everything else.
 
 
 We can actually add one more check - verify that the hash of the unsignedTx matches the provided hash in the payload:
@@ -262,6 +270,8 @@ const validateETHTransaction = (payload) => {
         parseFloat(unsignedTx.value, 16) / 1e18 === payload.destinations[0].amountNative 
         && 
         unsignedTx.to.toString("hex") === payload.destinations[0].displayDstAddress.toLowerCase() 
+        && 
+        unsignedTx.data.length === 0 // no calldata: plain ETH transfers only
         && 
         unsignedTx.getMessageToSign(true).toString("hex") == providedHash
     )
@@ -354,6 +364,8 @@ const validateETHTransaction = (payload) => {
         parseFloat(unsignedTx.value, 16) / 1e18 === payload.destinations[0].amountNative 
         && 
         unsignedTx.to.toString("hex") === payload.destinations[0].displayDstAddress.toLowerCase() 
+        && 
+        unsignedTx.data.length === 0 // no calldata: plain ETH transfers only
         && 
         unsignedTx.getMessageToSign(true).toString("hex") == providedHash
     )
